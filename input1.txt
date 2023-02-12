@@ -1,0 +1,22 @@
+18
+6
+fileInput1.csv
+string string char int int float
+
+F Ivan
+F Ruth
+
+V 42
+V 124.9
+
+D
+
+I 4
+
+C 0 3
+C 2 5
+
+R 5 10
+R 12 15
+
+S 0 2 0 5
