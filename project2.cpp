@@ -17,14 +17,28 @@ protected:
 
 public:
 	//Constructors
-	tableClass();
-	tableClass(int rows, int cols);
+	tableClass()
+	{
+		
+	}
+	tableClass(int rows, int cols)
+	{
+
+	}
 	
 	// Overload the [] operator to access a row in myTable
 	string* operator[](int i); 
 
 	//File reading Method
-	void readCSV(string filename);
+	void readCSV(string filename)
+	{
+		ifstream csvReader(filename); //initialize ifstream object
+		string line; //create buffer string to read from file
+		char delimiter = ','; //declare delimiter to be used in later operations
+		getline(csvReader, line);
+		cout<<line;
+	}
+
 
 	//Output Method
 	void display();
@@ -52,13 +66,18 @@ public:
 	~tableClass();
 };
 
-
-
 int main()
 {
 	int numRows, numCols;
 	string fileName;
 	char option;
+	
+	ifstream file;
+	file.open("input1.txt");
+	if(file.is_open())
+	{
+		cin.rdbuf(file.rdbuf());
+	}
 
 	cin >> numRows >> numCols >> fileName;
 	cout << "NumRows: " << numRows << endl;
@@ -73,5 +92,6 @@ int main()
 
     // TODO: start reading the options till the end of the file
 
+	file.close();
 	return 0;
 }
