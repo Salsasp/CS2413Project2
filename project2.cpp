@@ -23,7 +23,10 @@ public:
 	}
 	tableClass(int rows, int cols)
 	{
-
+		noRows = rows;
+		noCols = cols;
+		DTarray[cols];
+		myTable[noRows][noCols];
 	}
 	
 	// Overload the [] operator to access a row in myTable
@@ -53,8 +56,29 @@ public:
 	void searchValue(string str);
 	
 	//Getters
-	int getNumberRows(); // returns the number of rows
-	int getNumberCols(); // returns the number of columns
+	int getNumberRows() // returns the number of rows
+	{
+		return noRows;
+	}
+	int getNumberCols() // returns the number of columns
+	{
+		return noCols;
+	}
+	void outputDTarray()
+	{
+		for(int i = 0; i < noCols; i++)
+		{
+			cout<<DTarray[i]<<" ";
+		}
+	}
+	void setDTarray(string *array, int size)//modify the DTarray member of tableClass
+	{
+		for(int i = 0; i < size; i++)
+		{
+			cout << array[i] << " ";
+			DTarray[i] = array[i];
+		}
+	}
 	tableClass* getColumns(int colLeft, int colRight); // returns a tableClass with a set of columns from colLeft to colRight indices
 	tableClass* getRows(int rowTop, int rowBottom); // returns a tableClass with a set of rows from rowTop to rowBottom indices
 	tableClass* getRowsCols(int colLeft, int colRight, int rowTop, int rowBottom); // returns a tableClass with the data between the cols and rows given
@@ -73,22 +97,30 @@ int main()
 	char option;
 	
 	ifstream file;
-	file.open("input1.txt");
+	file.open("input1.txt"); //open text file using fstream
 	if(file.is_open())
 	{
-		cin.rdbuf(file.rdbuf());
+		cin.rdbuf(file.rdbuf()); //redirect cin into the txt file if the file is open
 	}
 
-	cin >> numRows >> numCols >> fileName;
-	cout << "NumRows: " << numRows << endl;
-	cout << "NumCols: " << numCols << endl;
-	cout << "FileName: " << fileName << endl;
+	cin >> numRows >> numCols >> fileName; // read in data from txt file
 
-	tableClass* d = new tableClass(numRows, numCols);
+	tableClass* d = new tableClass(numRows, numCols); //constuct tableClass object
 
+	//d->readCSV(fileName);
     // TODO: read the file input name and call readCSV()
     
     // TODO: read the data types and store in DTarray of d
+	string DTarray[numCols];
+	string tempStr;
+	for(int i = 0; i < numCols; i++)
+	{
+		cin >> tempStr;
+		DTarray[i] = tempStr;
+	}
+	d->setDTarray(DTarray, numCols);
+
+	d->outputDTarray();
 
     // TODO: start reading the options till the end of the file
 
