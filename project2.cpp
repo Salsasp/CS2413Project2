@@ -38,7 +38,17 @@ public:
 		ifstream csvReader(filename); //initialize ifstream object
 		string line; //create buffer string to read from file
 		char delimiter = ','; //declare delimiter to be used in later operations
-		getline(csvReader, line);
+		int rowCounter = 0; //int to count row position through loop
+		int delimIndex = 0; //int to keep track of indices to use in substr function
+		while(getline(csvReader, line)) //check if file has another line through each loop
+		{
+			for(int i = 0; i < noCols; i ++) //parse through each item in the line
+			{
+				delimIndex = line.find(delimiter);
+				myTable[rowCounter][i] = line.substr(0, delimIndex);
+			}
+		}
+		
 		cout<<line;
 	}
 
@@ -71,13 +81,9 @@ public:
 			cout<<DTarray[i]<<" ";
 		}
 	}
-	void setDTarray(string *array, int size)//modify the DTarray member of tableClass
+	void setDTarray(string *array)//modify the DTarray member of tableClass
 	{
-		for(int i = 0; i < size; i++)
-		{
-			cout << array[i] << " ";
-			DTarray[i] = array[i];
-		}
+		DTarray = array;
 	}
 	tableClass* getColumns(int colLeft, int colRight); // returns a tableClass with a set of columns from colLeft to colRight indices
 	tableClass* getRows(int rowTop, int rowBottom); // returns a tableClass with a set of rows from rowTop to rowBottom indices
@@ -118,9 +124,7 @@ int main()
 		cin >> tempStr;
 		DTarray[i] = tempStr;
 	}
-	d->setDTarray(DTarray, numCols);
-
-	d->outputDTarray();
+	d->setDTarray(DTarray);
 
     // TODO: start reading the options till the end of the file
 
