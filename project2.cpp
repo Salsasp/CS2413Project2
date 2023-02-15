@@ -25,8 +25,12 @@ public:
 	{
 		noRows = rows;
 		noCols = cols;
-		DTarray[cols];
-		myTable[noRows][noCols];
+		DTarray[cols]; //initalizing DTarray with length of cols
+		myTable = new string*[rows]; // set myTable equal to a 1d array of length rows
+		for(int i = 0; i < rows; i++) //not sure how this works but I'll figure it out later TODO
+		{
+			myTable[i] = new string[cols];
+		}
 	}
 	
 	// Overload the [] operator to access a row in myTable
@@ -39,22 +43,29 @@ public:
 		string line; //create buffer string to read from file
 		char delimiter = ','; //declare delimiter to be used in later operations
 		int rowCounter = 0; //int to count row position through loop
-		int delimIndex = 0; //int to keep track of indices to use in substr function
-		while(getline(csvReader, line)) //check if file has another line through each loop
+		for(rowCounter; rowCounter < noRows; rowCounter++) //loop through all lines in CSV file
 		{
-			for(int i = 0; i < noCols; i ++) //parse through each item in the line
+			for(int i = 0; i < noCols-1; i ++) //parse through each item in the line past the first item
 			{
-				delimIndex = line.find(delimiter);
-				myTable[rowCounter][i] = line.substr(0, delimIndex);
+				getline(csvReader,myTable[rowCounter][i],delimiter);
 			}
+			getline(csvReader,myTable[rowCounter][noCols-1]);
 		}
-		
-		cout<<line;
 	}
 
 
 	//Output Method
-	void display();
+	void display()
+	{
+		for(int i = 0; i < noRows; i++)
+		{
+			for(int j = 0; j < noCols; j++)
+			{
+				cout << myTable[i][j] << " ";
+			}
+			cout << '\n';
+		}
+	}
 
 	//Sort the table
 	void sortTable();
@@ -113,9 +124,6 @@ int main()
 
 	tableClass* d = new tableClass(numRows, numCols); //constuct tableClass object
 
-	//d->readCSV(fileName);
-    // TODO: read the file input name and call readCSV()
-    
     // TODO: read the data types and store in DTarray of d
 	string DTarray[numCols];
 	string tempStr;
@@ -125,6 +133,9 @@ int main()
 		DTarray[i] = tempStr;
 	}
 	d->setDTarray(DTarray);
+
+	d->readCSV(fileName);
+	d->display();
 
     // TODO: start reading the options till the end of the file
 
