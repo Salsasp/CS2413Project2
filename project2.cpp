@@ -45,11 +45,11 @@ public:
 		int rowCounter = 0; //int to count row position through loop
 		for(rowCounter; rowCounter < noRows; rowCounter++) //loop through all lines in CSV file
 		{
-			for(int i = 0; i < noCols-1; i ++) //parse through each item in the line past the first item
+			for(int i = 0; i < noCols-1; i ++) 
 			{
-				getline(csvReader,myTable[rowCounter][i],delimiter);
+				getline(csvReader,myTable[rowCounter][i],delimiter); //parse through each item in the line using a delimiter
 			}
-			getline(csvReader,myTable[rowCounter][noCols-1]);
+			getline(csvReader,myTable[rowCounter][noCols-1]); //parse the last item in a line which does not have a comma at the end
 		}
 	}
 
@@ -96,7 +96,18 @@ public:
 	{
 		DTarray = array;
 	}
-	tableClass* getColumns(int colLeft, int colRight); // returns a tableClass with a set of columns from colLeft to colRight indices
+	tableClass* getColumns(int colLeft, int colRight) // returns a tableClass with a set of columns from colLeft to colRight indices
+	{
+		tableClass* newTable = new tableClass(noRows, (colRight - colLeft) + 1); //create a new tableClass with size equal to difference between boundaries (+1 for inclusivity)
+		for(int i = 0; i < noRows; i++) // outer loop for rows
+		{
+			for(int j = 0; j < (colRight - colLeft) + 1; j++) //inner loop for columns
+			{
+				 newTable->myTable[i][j] = this->myTable[i][j+colLeft]; //set new table values equal to current table values within boundaries
+			}
+		}
+		return newTable;
+	}
 	tableClass* getRows(int rowTop, int rowBottom); // returns a tableClass with a set of rows from rowTop to rowBottom indices
 	tableClass* getRowsCols(int colLeft, int colRight, int rowTop, int rowBottom); // returns a tableClass with the data between the cols and rows given
 
@@ -109,6 +120,12 @@ public:
 
 int main()
 {
+	string* rowOfName;
+	double* findValue;
+	int* minOfCol;
+	int* subsetCols;
+	int* subsetRows;
+	int* subsetRowsCols;
 	int numRows, numCols;
 	string fileName;
 	char option;
@@ -132,11 +149,26 @@ int main()
 		cin >> tempStr;
 		DTarray[i] = tempStr;
 	}
+	double tempD;
+	int temp;
+	/*
+	while(!file.eof())
+	{
+		cin >> option;
+		switch(option)
+		{
+			case 'F':
+				cin >> temp;
+
+				break;
+		}
+	}
+	*/
 	d->setDTarray(DTarray);
 
 	d->readCSV(fileName);
 	d->display();
-
+	cout << '\n';
     // TODO: start reading the options till the end of the file
 
 	file.close();
