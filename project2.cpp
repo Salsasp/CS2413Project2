@@ -151,23 +151,50 @@ int main()
 	}
 	double tempD;
 	int temp;
-	/*
+	
 	while(!file.eof())
 	{
 		cin >> option;
 		switch(option)
 		{
-			case 'F':
+			case 'F': //return the row of the value corresponding to the first column
 				cin >> temp;
 
 				break;
+			case 'V': //find value in table and return its row and column number
+				cin >> temp;
+
+				break;
+			case 'D': //display data in tableClass object
+				d->display();
+				break;
+			case 'I': //find the min value of a given column
+				cin >> temp;
+				
+				break;
+			case 'C': //return a tableClass object that is a subset of the columns between 2 given boundaries
+				cin >> temp;
+
+				break;
+			case 'R': //return a tableClass object that is a subset of the rows between 2 given boundaries
+				cin >> temp;
+
+				break;
+			case 'S': //return a tableClass object that is a subset of the rows and columns between 4 given boundaries (2 for rows, 2 for cols)
+				cin >> temp;
+
+				break;
+			default: //default case
+				cout << "There was an error reading input." << endl;
+			
+
 		}
 	}
-	*/
+	
 	d->setDTarray(DTarray);
 
 	d->readCSV(fileName);
-	d->display();
+	//d->display();
 	cout << '\n';
     // TODO: start reading the options till the end of the file
 
