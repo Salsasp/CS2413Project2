@@ -120,13 +120,9 @@ public:
 
 int main()
 {
-	string* rowOfName;
-	double* findValue;
-	int* minOfCol;
-	int* subsetCols;
-	int* subsetRows;
-	int* subsetRowsCols;
-	int numRows, numCols;
+	string name;
+	double V;
+	int numRows, numCols, I, C1, C2, R1, R2, S1, S2, S3, S4;
 	string fileName;
 	char option;
 	
@@ -149,8 +145,6 @@ int main()
 		cin >> tempStr;
 		DTarray[i] = tempStr;
 	}
-	double tempD;
-	int temp;
 	
 	while(!file.eof())
 	{
@@ -158,30 +152,30 @@ int main()
 		switch(option)
 		{
 			case 'F': //return the row of the value corresponding to the first column
-				cin >> temp;
-
+				cin >> name;
+				//method goes here
 				break;
 			case 'V': //find value in table and return its row and column number
-				cin >> temp;
+				cin >> V;
 
 				break;
 			case 'D': //display data in tableClass object
 				d->display();
 				break;
 			case 'I': //find the min value of a given column
-				cin >> temp;
+				cin >> I;
 				
 				break;
 			case 'C': //return a tableClass object that is a subset of the columns between 2 given boundaries
-				cin >> temp;
+				cin >> C1 >> C2;
 
 				break;
 			case 'R': //return a tableClass object that is a subset of the rows between 2 given boundaries
-				cin >> temp;
+				cin >> R1 >> R2;
 
 				break;
 			case 'S': //return a tableClass object that is a subset of the rows and columns between 4 given boundaries (2 for rows, 2 for cols)
-				cin >> temp;
+				cin >> S1 >> S2 >> S3 >> S4;
 
 				break;
 			default: //default case
