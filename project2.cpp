@@ -61,7 +61,7 @@ public:
 		{
 			for(int j = 0; j < noCols; j++)
 			{
-				cout << myTable[i][j] << " ";
+				cout << myTable[i][j] << '\t';
 			}
 			cout << '\n';
 		}
@@ -71,8 +71,24 @@ public:
 	void sortTable();
 
 	//Search record
-	string* searchRecord(string str); // str will be from the first column
-
+	string* searchRecord(string str) // str will be from the first column
+	{
+		string* rowData = new string[noCols];
+		string tempVal;
+		for(int i = 0; i < noRows; i++)
+		{
+			if(myTable[i][0].compare(str) == 0)
+			{
+				for(int j = 0; j < noCols; j++)
+				{
+					tempVal = myTable[i][j];
+					rowData[j] = tempVal;
+				}
+				return rowData;
+			}
+		}
+		return NULL;
+	}
 	//Search value from table
 	void searchValue(string str);
 	
@@ -124,6 +140,7 @@ int main()
 	double V;
 	int numRows, numCols, I, C1, C2, R1, R2, S1, S2, S3, S4;
 	string fileName;
+	string* record;
 	char option;
 	
 	ifstream file;
@@ -134,6 +151,8 @@ int main()
 	}
 
 	cin >> numRows >> numCols >> fileName; // read in data from txt file
+	cout<<"NumRows: "<<numRows<<'\n'<<"NumCols: "<<numCols<<'\n'; //output numRows and numCols
+	cout<<"FileName: "<<fileName<<'\n'; //output filename
 
 	tableClass* d = new tableClass(numRows, numCols); //constuct tableClass object
 
@@ -145,15 +164,27 @@ int main()
 		cin >> tempStr;
 		DTarray[i] = tempStr;
 	}
-	
+	d->setDTarray(DTarray);
+
+	d->readCSV(fileName);
 	while(!file.eof())
 	{
 		cin >> option;
 		switch(option)
 		{
 			case 'F': //return the row of the value corresponding to the first column
-				cin >> name;
-				//method goes here
+				cin >> name; //read in data
+				record = d->searchRecord(name); //call class function to search table for data
+				if(record != NULL) //check that method has found the data
+				{
+					cout << "Record found:" << '\n';
+					for(int i = 0; i < numCols; i++) //for loop to output all data in row
+					{
+						cout << '\t' << record[i];
+					}
+					cout << '\n';
+				}
+				else cout << "Record not found" << '\n'; //output in case that data was not found
 				break;
 			case 'V': //find value in table and return its row and column number
 				cin >> V;
@@ -185,12 +216,10 @@ int main()
 		}
 	}
 	
-	d->setDTarray(DTarray);
-
-	d->readCSV(fileName);
 	//d->display();
 	cout << '\n';
-    // TODO: start reading the options till the end of the file
+    
+	//---------------------------------------------------------------------------------------------------------------------------------------------------
 
 	file.close();
 	return 0;
