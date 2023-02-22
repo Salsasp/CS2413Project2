@@ -6,8 +6,24 @@
 #include <iostream>
 #include <string>
 #include <fstream> // for reading fileInput
-
 using namespace std;
+
+class tableException : exception
+{
+	public:
+		string outOfBounds()
+		{
+			return "Index out of bounds";
+		}
+		string invalidType()
+		{
+			return "Non-numerical data type used as argument.";
+		}
+		string nameNotPresent()
+		{
+			return "Record not found";
+		}
+};
 
 class tableClass {
 protected:
@@ -100,7 +116,8 @@ public:
 				return rowData;
 			}
 		}
-		return NULL; //exception for if no such str exists
+			return NULL; //exception for if no such str exists
+		
 	}
 	//Search value from table
 	void searchValue(string str)
@@ -157,7 +174,18 @@ public:
 	tableClass* getRowsCols(int colLeft, int colRight, int rowTop, int rowBottom); // returns a tableClass with the data between the cols and rows given
 
 	//Find info of a given column
-	double findMin(int colNumber); // returns the min of the given column
+	double findMin(int colNumber)// returns the min of the given column
+	{
+		double min = stod(myTable[0][colNumber]);
+		for(int i = 1; i < noRows; i++)//loop through all rows in table
+		{
+			if(stod(myTable[i][colNumber]) < min)
+			{
+				min = stod(myTable[i][colNumber]);
+			}
+		}
+		return min;
+	} 
 
 	//Destructor
 	~tableClass();
@@ -204,8 +232,9 @@ int main()
 			case 'F': //return the row of the value corresponding to the first column
 				cin >> name; //read in data
 				record = d->searchRecord(name); //call class function to search table for data
-				if(record != NULL) //check that method has found the data
+				try
 				{
+					if(record == NULL)throw tableException();
 					cout << "Record found:" << '\n';
 					for(int i = 0; i < numCols; i++) //for loop to output all data in row
 					{
@@ -213,7 +242,10 @@ int main()
 					}
 					cout << '\n';
 				}
-				else cout << "Record not found" << '\n'; //output in case that data was not found
+				catch(tableException e)
+				{
+					cout << e.nameNotPresent() << '\n'; //output in case that data was not found
+				}
 				break;
 			case 'V': //find value in table and return its row and column number
 				cin >> V;
@@ -224,6 +256,15 @@ int main()
 				break;
 			case 'I': //find the min value of a given column
 				cin >> I;
+				try
+				{
+					if(stoi(I) < 3)throw tableException();
+					cout<<"Min of "<<stoi(I)<<" is "<< d->findMin(stoi(I));
+				}				
+				catch(tableException e)
+				{
+					cout << e.invalidType() << '\n';
+				}
 				
 				break;
 			case 'C': //return a tableClass object that is a subset of the columns between 2 given boundaries
