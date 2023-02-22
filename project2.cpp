@@ -68,7 +68,20 @@ public:
 	}
 
 	//Sort the table
-	void sortTable();
+	void sortTable() //function utilizing insertion sort to sort table based on first column data
+	{
+		string* tempRow;
+		for(int i = 1; i < noRows; i++) //loop through each row in table
+		{
+			//shift all elements to add smaller elements to front
+			for(int j = i; j > 0 && myTable[j-1][0].compare(myTable[j][0]) > 0; j--)//shift elements while previous element is greater than next element
+			{
+				tempRow = myTable[j-1]; //temp var to store row for swapping
+				myTable[j-1] = myTable[j]; //swap left row with right row
+				myTable[j] = tempRow; //swap right row with left row
+			}
+		}
+	}
 
 	//Search record
 	string* searchRecord(string str) // str will be from the first column
@@ -165,8 +178,8 @@ int main()
 		DTarray[i] = tempStr;
 	}
 	d->setDTarray(DTarray);
-
 	d->readCSV(fileName);
+	d->sortTable();
 	while(!file.eof())
 	{
 		cin >> option;
