@@ -86,13 +86,13 @@ public:
 	//Search record
 	string* searchRecord(string str) // str will be from the first column
 	{
-		string* rowData = new string[noCols];
+		string* rowData = new string[noCols]; //1d string array to hold row data
 		string tempVal;
-		for(int i = 0; i < noRows; i++)
+		for(int i = 0; i < noRows; i++) //loop through all rows in table
 		{
-			if(myTable[i][0].compare(str) == 0)
+			if(myTable[i][0].compare(str) == 0) //check that first column data is the same as the target str
 			{
-				for(int j = 0; j < noCols; j++)
+				for(int j = 0; j < noCols; j++) //loop to copy all data from a row into rowData
 				{
 					tempVal = myTable[i][j];
 					rowData[j] = tempVal;
@@ -100,10 +100,26 @@ public:
 				return rowData;
 			}
 		}
-		return NULL;
+		return NULL; //exception for if no such str exists
 	}
 	//Search value from table
-	void searchValue(string str);
+	void searchValue(string str)
+	{
+		bool found = false;
+		cout << "Searching for " << str << '\n';
+		for(int i = 0; i < noRows; i++)
+		{
+			for(int j = 0; j < noCols; j++)
+			{
+				if(myTable[i][j].compare(str) == 0) 
+				{
+					cout << " found in (" << i << "," << j << ")" << '\n';
+					found = true;
+				}
+			}
+		}
+		if(!found) cout << "Value not found" << '\n';
+	}
 	
 	//Getters
 	int getNumberRows() // returns the number of rows
@@ -150,8 +166,8 @@ public:
 int main()
 {
 	string name;
-	double V;
-	int numRows, numCols, I, C1, C2, R1, R2, S1, S2, S3, S4;
+	string V, I, C1, C2, R1, R2, S1, S2, S3, S4;
+	int numRows, numCols;
 	string fileName;
 	string* record;
 	char option;
@@ -201,7 +217,7 @@ int main()
 				break;
 			case 'V': //find value in table and return its row and column number
 				cin >> V;
-
+				d->searchValue(V);
 				break;
 			case 'D': //display data in tableClass object
 				d->display();
