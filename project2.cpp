@@ -41,7 +41,7 @@ public:
 	{
 		noRows = rows;
 		noCols = cols;
-		DTarray[cols]; //initalizing DTarray with length of cols
+		DTarray = new string[noCols]; //initalizing DTarray with length of cols
 		myTable = new string*[rows]; // set myTable equal to a 1d array of length rows
 		for(int i = 0; i < rows; i++) //not sure how this works but I'll figure it out later TODO
 		{
@@ -73,6 +73,11 @@ public:
 	//Output Method
 	void display()
 	{
+		for(int i = 0; i < noCols; i++)
+		{
+			cout << DTarray[i] << " ";
+		}
+		cout << '\n';
 		for(int i = 0; i < noRows; i++)
 		{
 			for(int j = 0; j < noCols; j++)
@@ -147,25 +152,27 @@ public:
 	{
 		return noCols;
 	}
-	void outputDTarray()
+	void setDTarray(string* array)//modify the DTarray member of tableClass
 	{
 		for(int i = 0; i < noCols; i++)
 		{
-			cout<<DTarray[i]<<" ";
+			DTarray[i] = array[i];
 		}
-	}
-	void setDTarray(string *array)//modify the DTarray member of tableClass
-	{
-		DTarray = array;
 	}
 	tableClass* getColumns(int colLeft, int colRight) // returns a tableClass with a set of columns from colLeft to colRight indices
 	{
-		tableClass* newTable = new tableClass(noRows, (colRight - colLeft) + 1); //create a new tableClass with size equal to difference between boundaries (+1 for inclusivity)
+		tableClass* newTable = new tableClass(noRows, (colRight - colLeft)); //create a new tableClass with size equal to difference between boundaries (+1 for inclusivity)
+		string tempArray[colRight-colLeft];
+		for(int i = 0; i < (colRight-colLeft); i++)
+		{
+			tempArray[i] = DTarray[i+colLeft]; 
+		}
+		newTable->setDTarray(tempArray);
 		for(int i = 0; i < noRows; i++) // outer loop for rows
 		{
-			for(int j = 0; j < (colRight - colLeft) + 1; j++) //inner loop for columns
+			for(int j = 0; j < (colRight - colLeft); j++) //inner loop for columns
 			{
-				 newTable->myTable[i][j] = this->myTable[i][j+colLeft]; //set new table values equal to current table values within boundaries
+				newTable->myTable[i][j] = myTable[i][j+colLeft]; //set new table values equal to current table values within boundaries
 			}
 		}
 		return newTable;
@@ -188,13 +195,17 @@ public:
 	} 
 
 	//Destructor
-	~tableClass();
+	~tableClass()
+	{
+		delete[] myTable;
+	}
 };
 
 int main()
 {
 	string name;
 	string V, I, C1, C2, R1, R2, S1, S2, S3, S4;
+	tableClass* c = new tableClass();
 	int numRows, numCols;
 	string fileName;
 	string* record;
@@ -246,6 +257,7 @@ int main()
 				{
 					cout << e.nameNotPresent() << '\n'; //output in case that data was not found
 				}
+				delete[] record;
 				break;
 			case 'V': //find value in table and return its row and column number
 				cin >> V;
@@ -259,17 +271,18 @@ int main()
 				try
 				{
 					if(stoi(I) < 3)throw tableException();
-					cout<<"Min of "<<stoi(I)<<" is "<< d->findMin(stoi(I));
+					cout<<"Min of "<<stoi(I)<<" is "<< d->findMin(stoi(I)) << endl;
 				}				
 				catch(tableException e)
 				{
 					cout << e.invalidType() << '\n';
 				}
-				
 				break;
 			case 'C': //return a tableClass object that is a subset of the columns between 2 given boundaries
 				cin >> C1 >> C2;
-
+				c = d->getColumns(stoi(C1), stoi(C2));
+				c->display();
+				delete(c);
 				break;
 			case 'R': //return a tableClass object that is a subset of the rows between 2 given boundaries
 				cin >> R1 >> R2;
@@ -290,7 +303,9 @@ int main()
 	cout << '\n';
     
 	//---------------------------------------------------------------------------------------------------------------------------------------------------
+	delete(d);
 
 	file.close();
+	cout << "end of file reached";
 	return 0;
 }
