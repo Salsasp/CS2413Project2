@@ -1,0 +1,68 @@
+NumRows: 18
+NumCols: 6
+FileName: fileInput1.csv
+string string char int int float 
+Alex	Singapore	M	41	74	170.5	
+Bert	Zhongshan	M	42	68	166.8	
+Carl	Izmir	M	32	70	155.9	
+Dave	Philadelphia	M	39	72	167.6	
+Elly	Vienna	F	30	66	124.9	
+Fran	Hamburg	F	33	66	115.5	
+Gwen	Bucharest	F	26	64	121.1	
+Hank	Shanghai	M	30	71	158.7	
+Ivan	London	M	53	72	175.9	
+Jake	Ulsan	M	32	69	143.5	
+Kate	Patna	F	47	69	139.3	
+Luke	Porto Alegre	M	34	72	163.6	
+Myra	Karaj	F	23	62	98.8	
+Neil	Daejeon	M	36	75	160.9	
+Omar	Kampala	M	38	70	145.4	
+Page	Tehran	F	31	67	135.2	
+Quin	Chennai	M	29	71	176.0	
+Ruth	Managua	F	28	65	131.8	
+Record not found
+Record found: 
+	Quin	Chennai	M	29	71	176.0	
+Searching for 70
+ found in (2, 4)
+ found in (14, 4)
+Searching for 1000
+Value not found
+Min of 4 is 62
+Column Number 7 out of bounds
+string char 
+Singapore	M	
+Zhongshan	M	
+Izmir	M	
+Philadelphia	M	
+Vienna	F	
+Hamburg	F	
+Bucharest	F	
+Shanghai	M	
+London	M	
+Ulsan	M	
+Patna	F	
+Porto Alegre	M	
+Karaj	F	
+Daejeon	M	
+Kampala	M	
+Tehran	F	
+Chennai	M	
+Managua	F	
+string string char int int float 
+Bert	Zhongshan	M	42	68	166.8	
+Carl	Izmir	M	32	70	155.9	
+Dave	Philadelphia	M	39	72	167.6	
+Elly	Vienna	F	30	66	124.9	
+Fran	Hamburg	F	33	66	115.5	
+Gwen	Bucharest	F	26	64	121.1	
+Hank	Shanghai	M	30	71	158.7	
+Ivan	London	M	53	72	175.9	
+Jake	Ulsan	M	32	69	143.5	
+Kate	Patna	F	47	69	139.3	
+Luke	Porto Alegre	M	34	72	163.6	
+string 
+Singapore	
+Zhongshan	
+Izmir	
+Philadelphia	

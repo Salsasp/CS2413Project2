@@ -11,9 +11,9 @@ using namespace std;
 class tableException : exception
 {
 	public:
-		string outOfBounds()
+		string outOfBounds(int index)
 		{
-			return "Index out of bounds";
+			return "Column Number " + to_string(index) + " out of bounds";
 		}
 		string invalidType()
 		{
@@ -161,7 +161,7 @@ public:
 	}
 	tableClass* getColumns(int colLeft, int colRight) // returns a tableClass with a set of columns from colLeft to colRight indices
 	{
-		tableClass* newTable = new tableClass(noRows, (colRight - colLeft)); //create a new tableClass with size equal to difference between boundaries (+1 for inclusivity)
+		tableClass* newTable = new tableClass(noRows, (colRight - colLeft)); //create a new tableClass with size equal to difference between boundaries
 		string tempArray[colRight-colLeft];
 		for(int i = 0; i < (colRight-colLeft); i++)
 		{
@@ -177,8 +177,37 @@ public:
 		}
 		return newTable;
 	}
-	tableClass* getRows(int rowTop, int rowBottom); // returns a tableClass with a set of rows from rowTop to rowBottom indices
-	tableClass* getRowsCols(int colLeft, int colRight, int rowTop, int rowBottom); // returns a tableClass with the data between the cols and rows given
+	tableClass* getRows(int rowTop, int rowBottom) // returns a tableClass with a set of rows from rowTop to rowBottom indices
+	{
+		tableClass* newTable = new tableClass((rowBottom - rowTop), noCols); //create a new tableClass with size equal to difference between boundaries
+		for(int i = 0; i < noCols; i++) // outer loop for columns
+		{
+			for(int j = 0; j < (rowBottom - rowTop); j++) //inner loop for rows
+			{
+				newTable->myTable[j][i] = myTable[j+rowTop][i]; //set new table values equal to current table values within boundaries
+			}
+		}
+		newTable->setDTarray(DTarray);
+		return newTable;
+	}
+	tableClass* getRowsCols(int colLeft, int colRight, int rowTop, int rowBottom) // returns a tableClass with the data between the cols and rows given
+	{
+		tableClass* newTable = new tableClass((rowBottom-rowTop), (colRight - colLeft)); //create a new tableClass with size equal to difference between boundaries
+		string tempArray[colRight-colLeft];
+		for(int i = 0; i < (colRight-colLeft); i++)
+		{
+			tempArray[i] = DTarray[i+colLeft]; 
+		}
+		newTable->setDTarray(tempArray);
+		for(int i = 0; i < (rowBottom - rowTop); i++) // outer loop for rows
+		{
+			for(int j = 0; j < (colRight - colLeft); j++) //inner loop for columns
+			{
+				newTable->myTable[i][j] = myTable[i+rowTop][j+colLeft]; //set new table values equal to current table values within boundaries
+			}
+		}
+		return newTable;
+	}
 
 	//Find info of a given column
 	double findMin(int colNumber)// returns the min of the given column
@@ -205,7 +234,9 @@ int main()
 {
 	string name;
 	string V, I, C1, C2, R1, R2, S1, S2, S3, S4;
-	tableClass* c = new tableClass();
+	tableClass* c;
+	tableClass* r;
+	tableClass* s;
 	int numRows, numCols;
 	string fileName;
 	string* record;
@@ -235,9 +266,8 @@ int main()
 	d->setDTarray(DTarray);
 	d->readCSV(fileName);
 	d->sortTable();
-	while(!file.eof())
+	while(cin >> option)
 	{
-		cin >> option;
 		switch(option)
 		{
 			case 'F': //return the row of the value corresponding to the first column
@@ -270,12 +300,13 @@ int main()
 				cin >> I;
 				try
 				{
-					if(stoi(I) < 3)throw tableException();
+					if(stoi(I) < 3 || stoi(I) >= 6)throw tableException();
 					cout<<"Min of "<<stoi(I)<<" is "<< d->findMin(stoi(I)) << endl;
 				}				
 				catch(tableException e)
 				{
-					cout << e.invalidType() << '\n';
+					if(stoi(I) < 3)cout << e.invalidType() << '\n';
+					if(stoi(I) >= 6)cout << e.outOfBounds(stoi(I)) << '\n';
 				}
 				break;
 			case 'C': //return a tableClass object that is a subset of the columns between 2 given boundaries
@@ -286,26 +317,19 @@ int main()
 				break;
 			case 'R': //return a tableClass object that is a subset of the rows between 2 given boundaries
 				cin >> R1 >> R2;
-
+				r = d->getRows(stoi(R1), stoi(R2));
+				r->display();
 				break;
 			case 'S': //return a tableClass object that is a subset of the rows and columns between 4 given boundaries (2 for rows, 2 for cols)
 				cin >> S1 >> S2 >> S3 >> S4;
-
+				s = d->getRowsCols(stoi(S1),stoi(S2),stoi(S3),stoi(S4));
+				s->display();
 				break;
 			default: //default case
 				cout << "There was an error reading input." << endl;
-			
-
 		}
 	}
-	
-	//d->display();
-	cout << '\n';
-    
-	//---------------------------------------------------------------------------------------------------------------------------------------------------
 	delete(d);
-
 	file.close();
-	cout << "end of file reached";
 	return 0;
 }
