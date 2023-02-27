@@ -8,18 +8,30 @@
 #include <fstream> // for reading fileInput
 using namespace std;
 
-class tableException : exception
+string trimString(string str)
+{
+	for(int i = 0; i < str.length(); i++)
+	{
+		if(str.at(i) == ' ' || str.at(i) == '\n' || str.at(i) == '\t' || str.at(i) == '\r' || str.at(i) == '\f' || str.at(i) == '\v')
+		{
+			str.erase(i);
+		}
+	}
+	return str;
+}
+
+class tableException : exception //custom exception class
 {
 	public:
-		string outOfBounds(int index)
+		string outOfBounds(int index) //exception for index out of bounds
 		{
 			return "Column Number " + to_string(index) + " out of bounds";
 		}
-		string invalidType()
+		string invalidType() //exception for if a non numeric argument is used for the findMin function
 		{
 			return "Non-numerical data type used as argument.";
 		}
-		string nameNotPresent()
+		string nameNotPresent() //exception for if name is not within the table
 		{
 			return "Record not found";
 		}
@@ -33,17 +45,17 @@ protected:
 
 public:
 	//Constructors
-	tableClass()
+	tableClass() //empty default constructor
 	{
 		
 	}
-	tableClass(int rows, int cols)
+	tableClass(int rows, int cols) //main constructor which initializes rows and column sizes
 	{
 		noRows = rows;
 		noCols = cols;
 		DTarray = new string[noCols]; //initalizing DTarray with length of cols
 		myTable = new string*[rows]; // set myTable equal to a 1d array of length rows
-		for(int i = 0; i < rows; i++) //not sure how this works but I'll figure it out later TODO
+		for(int i = 0; i < rows; i++)//assign each element(pointer) of myTable to a string array, representing rows
 		{
 			myTable[i] = new string[cols];
 		}
@@ -66,6 +78,8 @@ public:
 				getline(csvReader,myTable[rowCounter][i],delimiter); //parse through each item in the line using a delimiter
 			}
 			getline(csvReader,myTable[rowCounter][noCols-1]); //parse the last item in a line which does not have a comma at the end
+			myTable[rowCounter][noCols-1] = trimString(myTable[rowCounter][noCols-1]);
+			
 		}
 	}
 
@@ -73,12 +87,12 @@ public:
 	//Output Method
 	void display()
 	{
-		for(int i = 0; i < noCols; i++)
+		for(int i = 0; i < noCols; i++) //loop through each element of DTarray to output
 		{
 			cout << DTarray[i] << " ";
 		}
 		cout << '\n';
-		for(int i = 0; i < noRows; i++)
+		for(int i = 0; i < noRows; i++) //nested loop to print every element of 2d array
 		{
 			for(int j = 0; j < noCols; j++)
 			{
@@ -91,7 +105,7 @@ public:
 	//Sort the table
 	void sortTable() //function utilizing insertion sort to sort table based on first column data
 	{
-		string* tempRow;
+		string* tempRow; //temp variable to hold shifting data during sort process
 		for(int i = 1; i < noRows; i++) //loop through each row in table
 		{
 			//shift all elements to add smaller elements to front
@@ -109,7 +123,7 @@ public:
 	{
 		string* rowData = new string[noCols]; //1d string array to hold row data
 		string tempVal;
-		for(int i = 0; i < noRows; i++) //loop through all rows in table
+		for(int i = 0; i < noRows; i++) //nested loop through all rows in table
 		{
 			if(myTable[i][0].compare(str) == 0) //check that first column data is the same as the target str
 			{
@@ -127,20 +141,20 @@ public:
 	//Search value from table
 	void searchValue(string str)
 	{
-		bool found = false;
+		bool found = false; //boolean var to keep track of whether str has been found
 		cout << "Searching for " << str << '\n';
-		for(int i = 0; i < noRows; i++)
+		for(int i = 0; i < noRows; i++) //nested for loop to check every element of table
 		{
 			for(int j = 0; j < noCols; j++)
 			{
-				if(myTable[i][j].compare(str) == 0) 
+				if(myTable[i][j].compare(str) == 0) //check if strings are the same
 				{
 					cout << " found in (" << i << "," << j << ")" << '\n';
 					found = true;
 				}
 			}
 		}
-		if(!found) cout << "Value not found" << '\n';
+		if(!found) cout << "Value not found" << '\n'; //if string is not in the table
 	}
 	
 	//Getters
@@ -154,7 +168,7 @@ public:
 	}
 	void setDTarray(string* array)//modify the DTarray member of tableClass
 	{
-		for(int i = 0; i < noCols; i++)
+		for(int i = 0; i < noCols; i++) //copy each element from argument into DTarray
 		{
 			DTarray[i] = array[i];
 		}
@@ -162,12 +176,12 @@ public:
 	tableClass* getColumns(int colLeft, int colRight) // returns a tableClass with a set of columns from colLeft to colRight indices
 	{
 		tableClass* newTable = new tableClass(noRows, (colRight - colLeft)); //create a new tableClass with size equal to difference between boundaries
-		string tempArray[colRight-colLeft];
+		string tempArray[colRight-colLeft];  //temp array to be used as argument for setDTarray()
 		for(int i = 0; i < (colRight-colLeft); i++)
 		{
-			tempArray[i] = DTarray[i+colLeft]; 
+			tempArray[i] = DTarray[i+colLeft]; //copy values
 		}
-		newTable->setDTarray(tempArray);
+		newTable->setDTarray(tempArray); //call function to setDTarray
 		for(int i = 0; i < noRows; i++) // outer loop for rows
 		{
 			for(int j = 0; j < (colRight - colLeft); j++) //inner loop for columns
@@ -194,9 +208,9 @@ public:
 	{
 		tableClass* newTable = new tableClass((rowBottom-rowTop), (colRight - colLeft)); //create a new tableClass with size equal to difference between boundaries
 		string tempArray[colRight-colLeft];
-		for(int i = 0; i < (colRight-colLeft); i++)
+		for(int i = 0; i < (colRight-colLeft); i++)//copy DTarray elements from within specified boundaries
 		{
-			tempArray[i] = DTarray[i+colLeft]; 
+			tempArray[i] = DTarray[i+colLeft]; //copying elements
 		}
 		newTable->setDTarray(tempArray);
 		for(int i = 0; i < (rowBottom - rowTop); i++) // outer loop for rows
@@ -232,17 +246,16 @@ public:
 
 int main()
 {
-	string name;
-	string V, I, C1, C2, R1, R2, S1, S2, S3, S4;
+	//declaring variables
+	string fileName, name, V, I, C1, C2, R1, R2, S1, S2, S3, S4;
 	tableClass* c;
 	tableClass* r;
 	tableClass* s;
 	int numRows, numCols;
-	string fileName;
 	string* record;
 	char option;
 	
-	ifstream file;
+	ifstream file; //ifstream object to read data from input file
 	file.open("input1.txt"); //open text file using fstream
 	if(file.is_open())
 	{
@@ -255,18 +268,18 @@ int main()
 
 	tableClass* d = new tableClass(numRows, numCols); //constuct tableClass object
 
-    // TODO: read the data types and store in DTarray of d
+    //read the data types and store in DTarray of d
 	string DTarray[numCols];
 	string tempStr;
-	for(int i = 0; i < numCols; i++)
+	for(int i = 0; i < numCols; i++)//read in column data types into DTarray
 	{
 		cin >> tempStr;
 		DTarray[i] = tempStr;
 	}
-	d->setDTarray(DTarray);
-	d->readCSV(fileName);
-	d->sortTable();
-	while(cin >> option)
+	d->setDTarray(DTarray); //initialize class data
+	d->readCSV(fileName); //read data into table
+	d->sortTable(); //sort table elements
+	while(cin >> option) //check that there are more things to be read in
 	{
 		switch(option)
 		{
@@ -275,7 +288,7 @@ int main()
 				record = d->searchRecord(name); //call class function to search table for data
 				try
 				{
-					if(record == NULL)throw tableException();
+					if(record == NULL)throw tableException(); //throw exception if name is not in the table
 					cout << "Record found:" << '\n';
 					for(int i = 0; i < numCols; i++) //for loop to output all data in row
 					{
@@ -283,53 +296,62 @@ int main()
 					}
 					cout << '\n';
 				}
-				catch(tableException e)
+				catch(tableException e) 
 				{
 					cout << e.nameNotPresent() << '\n'; //output in case that data was not found
 				}
-				delete[] record;
+				delete[] record; //deleting dynamic record array to prevent memory leak
 				break;
+
 			case 'V': //find value in table and return its row and column number
 				cin >> V;
-				d->searchValue(V);
+				d->searchValue(V); //seachValue function
 				break;
+
 			case 'D': //display data in tableClass object
 				d->display();
 				break;
+
 			case 'I': //find the min value of a given column
 				cin >> I;
 				try
 				{
-					if(stoi(I) < 3 || stoi(I) >= 6)throw tableException();
+					if(stoi(I) < 3 || stoi(I) >= 6)throw tableException(); //if the column number is out of bounds or non numerical, throw exception
 					cout<<"Min of "<<stoi(I)<<" is "<< d->findMin(stoi(I)) << endl;
 				}				
 				catch(tableException e)
 				{
-					if(stoi(I) < 3)cout << e.invalidType() << '\n';
-					if(stoi(I) >= 6)cout << e.outOfBounds(stoi(I)) << '\n';
+					if(stoi(I) < 3)cout << e.invalidType() << '\n'; //exception for non-numeric column
+					if(stoi(I) >= 6)cout << e.outOfBounds(stoi(I)) << '\n'; //exception for out of bounds
 				}
 				break;
+
 			case 'C': //return a tableClass object that is a subset of the columns between 2 given boundaries
 				cin >> C1 >> C2;
-				c = d->getColumns(stoi(C1), stoi(C2));
-				c->display();
-				delete(c);
+				c = d->getColumns(stoi(C1), stoi(C2)); //set c address equal to tableClass object generated by getColumns()
+				c->display(); //display the data of c
+				delete(c); //delete to free memory
 				break;
+
 			case 'R': //return a tableClass object that is a subset of the rows between 2 given boundaries
 				cin >> R1 >> R2;
-				r = d->getRows(stoi(R1), stoi(R2));
-				r->display();
+				r = d->getRows(stoi(R1), stoi(R2)); //set r address equal to tableClass object generated by getRows()
+				r->display(); //display the data of r
+				delete(r); //delete to free memory
 				break;
+
 			case 'S': //return a tableClass object that is a subset of the rows and columns between 4 given boundaries (2 for rows, 2 for cols)
 				cin >> S1 >> S2 >> S3 >> S4;
-				s = d->getRowsCols(stoi(S1),stoi(S2),stoi(S3),stoi(S4));
-				s->display();
+				s = d->getRowsCols(stoi(S1),stoi(S2),stoi(S3),stoi(S4)); //set s address equal to tableClass object generated by getRowsColumns()
+				s->display(); //display the data of s
+				delete(s); //delete to free memory
 				break;
+
 			default: //default case
 				cout << "There was an error reading input." << endl;
 		}
 	}
-	delete(d);
-	file.close();
+	delete(d); //delete tableClass object 2
+	file.close(); //close the ifstream object
 	return 0;
 }
